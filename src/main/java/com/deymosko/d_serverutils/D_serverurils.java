@@ -27,7 +27,7 @@ public class D_serverurils {
     public static final String MODID = "d_serverutils";
     public static float tps;
     // Directly reference a slf4j logger
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
     // Create a Deferred Register to hold Blocks which will all be registered under the "d_serverurils" namespace
 
     public D_serverurils() {

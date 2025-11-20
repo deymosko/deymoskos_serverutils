@@ -1,6 +1,6 @@
 package com.deymosko.command;
 
-import com.deymosko.event.TPSTracker;
+import com.deymosko.event.ServerEvents;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
@@ -26,7 +26,7 @@ public class TpsCommand
                             "☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰\n" +
                             "☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰\n" +
                             "☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰\n" +
-                            "☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰\n" + TPSTracker.getCurrentTps()));
+                            "☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰☰\n" + ServerEvents.TPSTracker.getCurrentTps()));
                     return 1;
                 });
     }
