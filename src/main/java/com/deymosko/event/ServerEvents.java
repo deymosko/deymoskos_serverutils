@@ -27,27 +27,41 @@ public class ServerEvents
     }
     public static class TPSTracker
     {
-        private static long lastTime = System.currentTimeMillis();
-        private static int ticks_this_second = 0;
+        private static final int SAMPLE_SIZE = 100;
+        private static final long[] tickDurationsNanos = new long[SAMPLE_SIZE];
+        private static int tickIndex = 0;
+        private static int recordedTicks = 0;
+        private static long lastTickTime = 0L;
         private static double tps = 20.0d;
-
 
         public static void recordTick()
         {
-
-            ticks_this_second++;
-
-            long now = System.currentTimeMillis();
-            long diff = now - lastTime;
-
-            if(diff >= 1000L)
+            long now = System.nanoTime();
+            if (lastTickTime == 0L)
             {
-                tps = ticks_this_second * (1000.0 / diff);
-                if(tps > 20.0d) tps = 20.0d;
-
-                ticks_this_second = 0;
-                lastTime = now;
+                lastTickTime = now;
+                return;
             }
+
+            long duration = now - lastTickTime;
+            lastTickTime = now;
+
+            tickDurationsNanos[tickIndex] = duration;
+            tickIndex = (tickIndex + 1) % SAMPLE_SIZE;
+            if (recordedTicks < SAMPLE_SIZE)
+            {
+                recordedTicks++;
+            }
+
+            long totalDuration = 0L;
+            for (int i = 0; i < recordedTicks; i++)
+            {
+                totalDuration += tickDurationsNanos[i];
+            }
+
+            double averageTickNanos = totalDuration / (double) recordedTicks;
+            double calculatedTps = 1_000_000_000.0d / averageTickNanos;
+            tps = Math.min(calculatedTps, 20.0d);
 
         }
 
