@@ -17,7 +17,7 @@ public class ServerEvents
     public static void onServerTick(TickEvent.ServerTickEvent event)
     {
         if(event.phase == TickEvent.Phase.END) return;
-        TPSTracker.recordTick();
+        TPSTracker.recordTick(event.getServer());
         ServerLevel level = event.getServer().overworld();
         double currentTps = TPSTracker.getCurrentTps();
         if (currentTps <= 15.0d) {
@@ -27,42 +27,19 @@ public class ServerEvents
     }
     public static class TPSTracker
     {
-        private static final int SAMPLE_SIZE = 100;
-        private static final long[] tickDurationsNanos = new long[SAMPLE_SIZE];
-        private static int tickIndex = 0;
-        private static int recordedTicks = 0;
-        private static long lastTickTime = 0L;
         private static double tps = 20.0d;
 
-        public static void recordTick()
+        public static void recordTick(MinecraftServer server)
         {
-            long now = System.nanoTime();
-            if (lastTickTime == 0L)
+            double averageTickMillis = server.getAverageTickTime();
+            if (averageTickMillis <= 0.0d)
             {
-                lastTickTime = now;
+                tps = 20.0d;
                 return;
             }
 
-            long duration = now - lastTickTime;
-            lastTickTime = now;
-
-            tickDurationsNanos[tickIndex] = duration;
-            tickIndex = (tickIndex + 1) % SAMPLE_SIZE;
-            if (recordedTicks < SAMPLE_SIZE)
-            {
-                recordedTicks++;
-            }
-
-            long totalDuration = 0L;
-            for (int i = 0; i < recordedTicks; i++)
-            {
-                totalDuration += tickDurationsNanos[i];
-            }
-
-            double averageTickNanos = totalDuration / (double) recordedTicks;
-            double calculatedTps = 1_000_000_000.0d / averageTickNanos;
+            double calculatedTps = 1000.0d / averageTickMillis;
             tps = Math.min(calculatedTps, 20.0d);
-
         }
 
         public static double getCurrentTps() {
