@@ -17,7 +17,7 @@ public class ServerEvents
     public static void onServerTick(TickEvent.ServerTickEvent event)
     {
         if(event.phase == TickEvent.Phase.END) return;
-
+        TPSTracker.recordTick();
         ServerLevel level = event.getServer().overworld();
         double currentTps = TPSTracker.getCurrentTps();
         if (currentTps <= 15.0d) {
@@ -32,10 +32,8 @@ public class ServerEvents
         private static double tps = 20.0d;
 
 
-        @SubscribeEvent
-        public static void onServerTick(TickEvent.ServerTickEvent event)
+        public static void recordTick()
         {
-            if(event.phase == TickEvent.Phase.END) return;
 
             ticks_this_second++;
 
